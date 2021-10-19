@@ -1,6 +1,6 @@
 {
     "name": "@egomobile/mongo",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Classes, functions and tools that help to connect and communicate to and with a NATS streaming server.",
     "main": "lib/index.js",
     "engines": {

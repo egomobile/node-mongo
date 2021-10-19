@@ -462,6 +462,20 @@ export class MongoDatabase {
     /**
      * Insert many documents into a MongoDB collection.
      *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // insert an array of two documents
+     * await mongo.insertMany('my_collection', [{
+     *   foo: 1,
+     * }, {
+     *   foo: 2,
+     * }])
+     * ```
+     *
      * @param {string} collectionName The collection's name.
      * @param {T[]} docs The documents to insert.
      * @param {BulkWriteOptions} [options] Custom options.
@@ -482,6 +496,18 @@ export class MongoDatabase {
 
     /**
      * Insert one document into a MongoDB collection.
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // insert a single document
+     * await mongo.insertOne('my_collection', {
+     *   foo: 1,
+     * })
+     * ```
      *
      * @param {string} collectionName The collection's name.
      * @param {T} doc The document to insert.
