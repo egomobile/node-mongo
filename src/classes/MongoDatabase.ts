@@ -331,6 +331,19 @@ export class MongoDatabase {
     /**
      * Registers the process events to close the connect on exit.
      *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // return Exit Code = 3 to
+     * // operating system
+     * // if connection closes
+     * // or process is terminated
+     * mongo.exitOnClose(3)
+     * ```
+     *
      * @param {number} exitCode The custom exit code.
      *
      * @returns {this} This instance.
@@ -364,6 +377,18 @@ export class MongoDatabase {
     /**
      * Does a find on a MongoDB collection.
      *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // all, where foo === 1
+     * const docs: any[] = await mongo.find('my_collection', {
+     *   foo: 1,
+     * })
+     * ```
+     *
      * @param {string} collectionName The collection's name.
      * @param {Filter<T>} filter The filter.
      * @param {FindOptions<T>} [options] Custom options.
@@ -385,6 +410,18 @@ export class MongoDatabase {
 
     /**
      * Does a findOne on a MongoDB collection.
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // (null) if not found
+     * const doc: any = await mongo.findOne('my_collection', {
+     *   foo: 1,
+     * })
+     * ```
      *
      * @param {string} collectionName The collection's name.
      * @param {Filter<T>} filter The filter.
