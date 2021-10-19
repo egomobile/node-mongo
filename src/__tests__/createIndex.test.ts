@@ -42,7 +42,5 @@ describe('createIndex() method', () => {
         expect(indexes[1].key.bar).toBe(-1);
         expect(typeof indexes[1].name).toBe('string');
         expect(indexes[1].name).toBe('foo_1_bar_-1');
-
-        console.log('indexes', indexes);
     });
 });

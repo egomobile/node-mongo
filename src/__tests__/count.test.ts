@@ -30,7 +30,7 @@ describe('count() method', () => {
     it('should return the count based on the inserted documents', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 100; i++) {
             const expectedCount = i + 1;
 
             await mongo.withClient((client, db) => {

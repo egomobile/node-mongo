@@ -18,6 +18,8 @@ import path from 'path';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoDatabase } from './classes/MongoDatabase';
 
+jest.setTimeout(60000);
+
 dotenv.config({
     path: path.join(__dirname, '.env.tests')
 });

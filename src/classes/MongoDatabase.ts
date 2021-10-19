@@ -247,6 +247,18 @@ export class MongoDatabase {
     /**
      * Delete documents from a MongoDB collection.
      *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = new MongoDatabase()
+     *
+     * // delete all documents with foo === 1
+     * await mongo.deleteMany('my_collection', {
+     *   foo: 1,
+     * })
+     * ```
+     *
      * @param {string} collectionName The collection's name.
      * @param {Filter<T>} filter The filter.
      * @param {DeleteOptions} [options] Custom options.
