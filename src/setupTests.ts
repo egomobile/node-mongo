@@ -59,7 +59,9 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-    await m!.disconnect();
+    if (m!.isConnected) {
+        await m!.disconnect();
+    }
 });
 
 afterAll(async () => {

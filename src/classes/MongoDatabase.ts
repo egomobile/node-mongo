@@ -168,7 +168,7 @@ export class MongoDatabase {
      * ```
      * import MongoDatabase from '@egomobile/mongo'
      *
-     * const mongo = new MongoDatabase()
+     * const mongo = await MongoDatabase.open()
      *
      * // count all documents
      * const count1 = await mongo.count('my_collection')
@@ -218,7 +218,7 @@ export class MongoDatabase {
      * ```
      * import MongoDatabase from '@egomobile/mongo'
      *
-     * const mongo = new MongoDatabase()
+     * const mongo = await MongoDatabase.open()
      *
      * await mongo.createIndex('my_collection', {
      *   foo: 1,
@@ -251,7 +251,7 @@ export class MongoDatabase {
      * ```
      * import MongoDatabase from '@egomobile/mongo'
      *
-     * const mongo = new MongoDatabase()
+     * const mongo = await MongoDatabase.open()
      *
      * // delete all documents with foo === 1
      * await mongo.deleteMany('my_collection', {
@@ -284,7 +284,7 @@ export class MongoDatabase {
      * ```
      * import MongoDatabase from '@egomobile/mongo'
      *
-     * const mongo = new MongoDatabase()
+     * const mongo = await MongoDatabase.open()
      *
      * // delete first document with foo === 1
      * await mongo.deleteOne('my_collection', {
@@ -312,6 +312,15 @@ export class MongoDatabase {
 
     /**
      * disconnect from database
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * await mongo.disconnect()
+     * ```
      */
     public async disconnect() {
         await this._client?.close();
@@ -453,6 +462,29 @@ export class MongoDatabase {
                 return collection.insertOne(doc);
             }
         });
+    }
+
+    /**
+     * Gets if instance is connected or not.
+     *
+     * @returns {boolean} Is connected or not.
+     */
+    public get isConnected(): boolean {
+        return !!this._client;
+    }
+
+    /**
+     * Creates and opens a new MongoDatabase instance.
+     *
+     * @param {IMongoDatabaseOptions|GetMongoDatabaseOptions} [optionsOrFunc] The options or the function that provides it.
+     *
+     * @returns {MongoDatabase} The new and open connection.
+     */
+    public static async open(optionsOrFunc: IMongoDatabaseOptions | GetMongoDatabaseOptions = defaultGetMongoDatabaseOptions): Promise<MongoDatabase> {
+        const mongo = new MongoDatabase(optionsOrFunc);
+        await mongo.connect();
+
+        return mongo;
     }
 
     /**
