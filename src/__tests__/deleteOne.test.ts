@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('deleteMany() method', () => {
+describe('deleteOne() method', () => {
     it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
@@ -26,7 +26,7 @@ describe('deleteMany() method', () => {
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
-        await mongo.deleteMany(collectionName, {
+        await mongo.deleteOne(collectionName, {
             foo: 1
         });
 
@@ -44,8 +44,12 @@ describe('deleteMany() method', () => {
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
+        let expectedCount = 0;
+
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
+                foo: 1
+            }, {
                 foo: 1
             }, {
                 foo: 2
@@ -59,7 +63,8 @@ describe('deleteMany() method', () => {
                 foo: true
             }];
 
-            const expectedCount = (i + 1) * (docsToInsert.length - 1);
+            expectedCount += docsToInsert.length;
+            expectedCount += -1;
 
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
@@ -67,7 +72,7 @@ describe('deleteMany() method', () => {
                 return collection.insertMany(docsToInsert);
             });
 
-            await mongo.deleteMany(collectionName, {
+            await mongo.deleteOne(collectionName, {
                 foo: 1
             });
 
