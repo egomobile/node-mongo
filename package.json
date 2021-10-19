@@ -1,6 +1,6 @@
 {
     "name": "@egomobile/mongo",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Classes, functions and tools, that help connecting to Mongo DB servers.",
     "main": "lib/index.js",
     "engines": {
@@ -16,7 +16,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/egomobile/node-nats.git"
+        "url": "git+https://github.com/egomobile/node-mongo.git"
     },
     "keywords": [
         "node",
