@@ -1,0 +1,81 @@
+{
+    "name": "@egomobile/mongo",
+    "version": "0.0.1",
+    "description": "Classes, functions and tools that help to connect and communicate to and with a NATS streaming server.",
+    "main": "lib/index.js",
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "scripts": {
+        "build": "del ./lib && tsc",
+        "docs:generate": "del ./docs && typedoc --out ./docs ./src",
+        "lint": "eslint -c .eslintrc.js --ext .ts src",
+        "lint:fix": "eslint --fix -c .eslintrc.js --ext .ts src",
+        "sandbox": "nodemon --watch './sandbox.ts' --exec node -r ts-node/register --inspect=0.0.0.0:9229 ./sandbox.ts",
+        "test": "jest --no-cache"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/egomobile/node-nats.git"
+    },
+    "keywords": [
+        "node",
+        "mongo",
+        "mongodb",
+        "database",
+        "client",
+        "connections",
+        "classes",
+        "tools",
+        "functions",
+        "typescript",
+        "js",
+        "ts",
+        "javascript",
+        "typescript",
+        "ego"
+    ],
+    "author": "Next.e.GO Mobile SE, Aachen, Germany",
+    "license": "LGPL-3.0",
+    "files": [
+        "CHANGELOG.md",
+        "LICENSE",
+        "lib",
+        "!lib/**/*.map",
+        "!lib/setupTests.*",
+        "!lib/__tests__/**/*",
+        "README.md"
+    ],
+    "jest": {
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "testMatch": [
+            "**/__tests__/**/*.ts"
+        ],
+        "setupFilesAfterEnv": [
+            "./src/setupTests.ts"
+        ]
+    },
+    "dependencies": {
+        "@types/node": "^12.20.33",
+        "mongodb": "^4.1.3"
+    },
+    "devDependencies": {
+        "@egomobile/tsconfig": "^5.0.0",
+        "@types/jest": "^26.0.24",
+        "@types/supertest": "^2.0.11",
+        "del-cli": "^4.0.1",
+        "dotenv": "^10.0.0",
+        "eslint": "^7.32.0",
+        "eslint-config-ego": "^0.15.0",
+        "jest": "^27.2.4",
+        "mongodb-memory-server": "6.9.6",
+        "nodemon": "^2.0.13",
+        "supertest": "^6.1.6",
+        "ts-jest": "^27.0.5",
+        "ts-node": "^10.3.0",
+        "tslint": "^6.1.3",
+        "typedoc": "^0.22.6",
+        "typescript": "~4.2.4"
+    }
+}
