@@ -146,15 +146,6 @@ export class MongoDatabase {
     }
 
     /**
-     * disconnect from database
-     */
-    public async disconnect() {
-        await this._client?.close();
-
-        this._client = null;
-    }
-
-    /**
      * connect to database
      */
     public async connect() {
@@ -172,6 +163,18 @@ export class MongoDatabase {
 
     /**
      * Does a count on a MongoDB collection.
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = new MongoDatabase()
+     *
+     * // count all documents
+     * const count1 = await mongo.count('my_collection')
+     * // count with filter
+     * const count2 = await mongo.count('my_collection', { foo: 'bar' })
+     * ```
      *
      * @param {string} collectionName The collection's name.
      * @param {Filter<T>} [filter] The filter.
@@ -210,6 +213,18 @@ export class MongoDatabase {
 
     /**
      * Create an index on a collection.
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = new MongoDatabase()
+     *
+     * await mongo.createIndex('my_collection', {
+     *   foo: 1,
+     *   bar: -1
+     * })
+     * ```
      *
      * @param {string} collectionName The collection's name.
      * @param {IndexSpecification} indexSpec The field or spec.
@@ -269,6 +284,15 @@ export class MongoDatabase {
                 return collection.deleteOne(filter);
             }
         });
+    }
+
+    /**
+     * disconnect from database
+     */
+    public async disconnect() {
+        await this._client?.close();
+
+        this._client = null;
     }
 
     /**

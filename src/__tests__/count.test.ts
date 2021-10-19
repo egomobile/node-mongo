@@ -33,10 +33,10 @@ describe('count() method', () => {
         for (let i = 0; i < 1000; i++) {
             const expectedCount = i + 1;
 
-            await mongo.withClient(async (client, db) => {
+            await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
-                await collection.insertOne({
+                return collection.insertOne({
                     expectedCount
                 });
             });
