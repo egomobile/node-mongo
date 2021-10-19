@@ -23,6 +23,7 @@ describe('deleteOne() method', () => {
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
@@ -32,6 +33,7 @@ describe('deleteOne() method', () => {
 
         const docs2 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should still be 0 / empty at the beginning
         expect(typeof docs2.length).toBe('number');
         expect(docs2.length).toBe(0);
     });
@@ -41,6 +43,7 @@ describe('deleteOne() method', () => {
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
@@ -66,22 +69,26 @@ describe('deleteOne() method', () => {
             expectedCount += docsToInsert.length;
             expectedCount += -1;
 
+            // insert test data
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
                 return collection.insertMany(docsToInsert);
             });
 
+            // remove first with foo === 1
             await mongo.deleteOne(collectionName, {
                 foo: 1
             });
 
+            // reload data
             const docs = await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
                 return collection.find({}).toArray();
             });
 
+            // check count
             expect(typeof docs.length).toBe('number');
             expect(docs.length).toBe(expectedCount);
         }

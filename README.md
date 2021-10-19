@@ -4,7 +4,7 @@
 
 # @egomobile/mongo
 
-> Classes, functions and tools, that helps connecting to Mongo DB servers, written in [TypeScript](https://www.typescriptlang.org/).
+> Classes, functions and tools, that help connecting to Mongo DB servers, written in [TypeScript](https://www.typescriptlang.org/).
 
 ## Install
 
@@ -16,7 +16,76 @@ npm install --save @egomobile/mongo
 
 ## Usage
 
-@TODO
+```typescript
+import MongoDatabase from "@egomobile/mongo";
+
+async function main() {
+  // alternative:
+  //
+  // mongo = new MongoDatabase();
+  // await mongo.connect();
+  const mongo = await MongoDatabase.open();
+  // mongo.isConnected should be (true) now
+
+  // terminate process if connection is closed
+  // --or-- close connection if process is exiting
+  //
+  // then return 3 as exit code
+  mongo.exitOnClose(3);
+
+  // count documents; should be 0
+  const count1 = await mongo.count("my_collection", {});
+  const count2 = await mongo.count("my_collection", { foo: 1 });
+
+  // insert single or many documents
+  await mongo.insertOne("my_collection", { foo: 1 });
+  await mongo.insertMany("my_collection", [
+    {
+      foo: 1,
+    },
+    {
+      foo: 2,
+      bar: "3",
+    },
+  ]);
+
+  // find documents
+  const firstMatchingDoc = await mongo.findOne("my_collection", { foo: 1 });
+  const matchingDocs = await mongo.find("my_collection", { foo: 2 });
+
+  // update documents
+  await mongo.updateOne(
+    "my_collection",
+    { foo: 1 },
+    {
+      foo: "11",
+    }
+  );
+  await mongo.updateMany(
+    "my_collection",
+    { foo: 2 },
+    {
+      foo: "222",
+    }
+  );
+
+  // delete documents
+  await mongo.deleteOne("my_collection", { foo: 1 });
+  await mongo.deleteMany("my_collection", { foo: 2 });
+
+  // do some low-level operations
+  await mongo.withClient(async (client, db) => {
+    const collection = db.collection("my_collection");
+
+    return collection.find({ foo: 2 }).toArray();
+  });
+
+  // close connection
+  await mongo.disconnect();
+}
+
+main().catch(console.error);
+```
 
 ## Documentation
 

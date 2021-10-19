@@ -18,9 +18,10 @@ import { MongoDatabase } from '..';
 const collectionName = 'test';
 
 describe('createIndex() method', () => {
-    it('should have indicies after created', async () => {
+    it('should have indicies after creation', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
+        // create index
         await mongo.createIndex(collectionName, {
             foo: 1,
             bar: -1
@@ -32,6 +33,7 @@ describe('createIndex() method', () => {
             return collection.indexes();
         });
 
+        // check data
         expect(Array.isArray(indexes)).toBe(true);
         expect(indexes.length).toBe(2);
         expect(typeof indexes[1]).toBe('object');

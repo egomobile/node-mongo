@@ -26,11 +26,58 @@ describe('findOne() method', () => {
         expect(doc).toBe(null);
     });
 
+    it('should return a document if using no filter in test collection', async () => {
+        const mongo: MongoDatabase = (global as any).mongo;
+
+        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+
+        // should be 0 / empty at the beginning
+        expect(typeof docs1.length).toBe('number');
+        expect(docs1.length).toBe(0);
+
+        for (let i = 0; i < 100; i++) {
+            const docsToInsert = [{
+                foo: '1',
+                bar: 11
+            }, {
+                foo: 1,
+                bar: '11'
+            }, {
+                foo: 2
+            }, {}, {
+                foo: null
+            }, {
+                foo: 1
+            }, {
+                foo: new Date()
+            }, {
+                foo: true
+            }];
+
+            // insert test data
+            await mongo.withClient((client, db) => {
+                const collection = db.collection(collectionName);
+
+                return collection.insertMany(docsToInsert);
+            });
+
+            const doc: any = await mongo.findOne(collectionName, {});
+
+            // check data
+            expect(typeof doc).toBe('object');
+            expect(typeof doc.foo).toBe('string');
+            expect(doc.foo).toBe('1');
+            expect(typeof doc.bar).toBe('number');
+            expect(doc.bar).toBe(11);
+        }
+    });
+
     it('should return a document if using a matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
@@ -53,6 +100,7 @@ describe('findOne() method', () => {
                 foo: true
             }];
 
+            // insert test data
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
@@ -63,6 +111,7 @@ describe('findOne() method', () => {
                 foo: 1
             });
 
+            // check data
             expect(typeof doc).toBe('object');
             expect(typeof doc.foo).toBe('number');
             expect(doc.foo).toBe(1);
@@ -76,6 +125,7 @@ describe('findOne() method', () => {
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
@@ -96,6 +146,7 @@ describe('findOne() method', () => {
                 foo: true
             }];
 
+            // insert test data
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
@@ -106,6 +157,7 @@ describe('findOne() method', () => {
                 foo: 3
             });
 
+            // check data
             expect(doc).toBe(null);
         }
     });

@@ -21,6 +21,7 @@ describe('disconnect() method', () => {
     it('should throw error if connection is closed', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
+        // should be connected
         expect(typeof mongo.isConnected).toBe('boolean');
         expect(mongo.isConnected).toBe(true);
 
@@ -30,6 +31,7 @@ describe('disconnect() method', () => {
 
         await mongo.disconnect();
 
+        // should not be connected anymore
         expect(typeof mongo.isConnected).toBe('boolean');
         expect(mongo.isConnected).toBe(false);
 

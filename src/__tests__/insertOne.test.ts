@@ -18,11 +18,12 @@ import { MongoDatabase } from '..';
 const collectionName = 'test';
 
 describe('insertOne() method', () => {
-    it('should return documents if inserting single elements to test collection', async () => {
+    it('should increase documents by 1 when inserting single document', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be empty / 0 at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
@@ -31,21 +32,31 @@ describe('insertOne() method', () => {
         for (let i = 0; i < 100; i++) {
             const docToInsert = {
                 foo: 1,
-                bar: 11
+                bar: '11'
             };
 
             ++expectedCount;
 
+            // insert single
             await mongo.insertOne(collectionName, docToInsert);
 
-            const count = await mongo.withClient((client, db) => {
+            const docs = await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
-                return collection.countDocuments();
+                return collection.find({}).toArray();
             });
 
-            expect(typeof count).toBe('number');
-            expect(expectedCount).toBe(expectedCount);
+            // check count
+            expect(typeof docs.length).toBe('number');
+            expect(docs.length).toBe(expectedCount);
+
+            // check data
+            for (const d of docs) {
+                expect(typeof d.foo).toBe('number');
+                expect(d.foo).toBe(1);
+                expect(typeof d.bar).toBe('string');
+                expect(d.bar).toBe('11');
+            }
         }
     });
 });

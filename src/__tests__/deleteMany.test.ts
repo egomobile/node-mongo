@@ -41,6 +41,7 @@ describe('deleteMany() method', () => {
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
@@ -61,22 +62,26 @@ describe('deleteMany() method', () => {
 
             const expectedCount = (i + 1) * (docsToInsert.length - 1);
 
+            // insert test data
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
                 return collection.insertMany(docsToInsert);
             });
 
+            // delete elements
             await mongo.deleteMany(collectionName, {
                 foo: 1
             });
 
+            // reload data
             const docs = await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
                 return collection.find({}).toArray();
             });
 
+            // check count
             expect(typeof docs.length).toBe('number');
             expect(docs.length).toBe(expectedCount);
         }

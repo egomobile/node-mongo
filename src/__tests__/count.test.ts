@@ -33,6 +33,7 @@ describe('count() method', () => {
         for (let i = 0; i < 100; i++) {
             const expectedCount = i + 1;
 
+            // insert next test data
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
@@ -43,6 +44,7 @@ describe('count() method', () => {
 
             const count = await mongo.count(collectionName);
 
+            // check count
             expect(typeof count).toBe('number');
             expect(count).toBe(expectedCount);
         }

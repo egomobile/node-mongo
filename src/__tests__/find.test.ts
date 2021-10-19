@@ -32,10 +32,9 @@ describe('find() method', () => {
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
-
-        let expectedCount = 0;
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
@@ -47,13 +46,12 @@ describe('find() method', () => {
             }, {
                 foo: '1'
             }, {
-                foo: new Date()
-            }, {
                 foo: true
             }];
 
-            expectedCount += docsToInsert.length;
+            const expectedCount = docsToInsert.length * (i + 1);
 
+            // insert test data
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
@@ -62,8 +60,18 @@ describe('find() method', () => {
 
             const docs = await mongo.find(collectionName, {});
 
+            // check new count
             expect(typeof docs.length).toBe('number');
             expect(docs.length).toBe(expectedCount);
+
+            // check data
+            for (let j = 0; j < docs.length; j++) {
+                const currentDoc = docs[j];
+                const sourceDoc = docsToInsert[j % docsToInsert.length];
+
+                expect(typeof currentDoc).toBe('object');
+                expect(currentDoc).toMatchObject(sourceDoc);
+            }
         }
     });
 
@@ -72,6 +80,7 @@ describe('find() method', () => {
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
@@ -80,12 +89,10 @@ describe('find() method', () => {
                 foo: 1
             }, {
                 foo: 2
-            }, {}, {
+            }, {
                 foo: null
             }, {
                 foo: '1'
-            }, {
-                foo: new Date()
             }, {
                 foo: 1
             }, {
@@ -94,18 +101,29 @@ describe('find() method', () => {
 
             const expectedCount = (i + 1) * 2;
 
+            // insert test data
             await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
                 return collection.insertMany(docsToInsert);
             });
 
+            // use a filter
             const docs = await mongo.find(collectionName, {
                 foo: 1
             });
 
+            // check count
             expect(typeof docs.length).toBe('number');
             expect(docs.length).toBe(expectedCount);
+
+            // check data
+            for (let j = 0; j < docs.length; j++) {
+                const currentDoc = docs[j];
+
+                expect(typeof currentDoc).toBe('object');
+                expect(currentDoc).toMatchObject({ foo: 1 });
+            }
         }
     });
 

@@ -23,10 +23,9 @@ describe('insertMany() method', () => {
 
         const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
 
+        // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
-
-        let expectedCount = 0;
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
@@ -37,7 +36,7 @@ describe('insertMany() method', () => {
                 bar: '11'
             }, {
                 foo: 2
-            }, {}, {
+            }, {
                 foo: null
             }, {
                 foo: '1'
@@ -47,18 +46,26 @@ describe('insertMany() method', () => {
                 foo: true
             }];
 
-            expectedCount += docsToInsert.length;
+            const expectedCount = docsToInsert.length * (i + 1);
 
+            // insert bulk of data
             await mongo.insertMany(collectionName, docsToInsert);
 
-            const count = await mongo.withClient((client, db) => {
+            // reload documents
+            const docs = await mongo.withClient((client, db) => {
                 const collection = db.collection(collectionName);
 
-                return collection.countDocuments();
+                return collection.find({}).toArray();
             });
 
-            expect(typeof count).toBe('number');
-            expect(expectedCount).toBe(expectedCount);
+            // check count
+            expect(typeof docs.length).toBe('number');
+            expect(docs.length).toBe(expectedCount);
+
+            // check data
+            for (const d of docs) {
+                expect(typeof d.foo).not.toBe('undefined');
+            }
         }
     });
 });

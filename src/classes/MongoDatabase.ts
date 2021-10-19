@@ -530,6 +530,21 @@ export class MongoDatabase {
     /**
      * Gets if instance is connected or not.
      *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // (true)
+     * mongo.isConnected
+     *
+     * await mongo.disconnect()
+     *
+     * // (false)
+     * mongo.isConnected
+     * ```
+     *
      * @returns {boolean} Is connected or not.
      */
     public get isConnected(): boolean {
@@ -538,6 +553,21 @@ export class MongoDatabase {
 
     /**
      * Creates and opens a new MongoDatabase instance.
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // (true)
+     * mongo.isConnected
+     *
+     * await mongo.disconnect()
+     *
+     * // (false)
+     * mongo.isConnected
+     * ```
      *
      * @param {IMongoDatabaseOptions|GetMongoDatabaseOptions} [optionsOrFunc] The options or the function that provides it.
      *
@@ -552,6 +582,26 @@ export class MongoDatabase {
 
     /**
      * Update documents in a MongoDB collection.
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // update all with foo === 1
+     * // and set foo = 2 and remove bar prop
+     * await mongo.updateMany('my_collection', {
+     *   foo: 1
+     * }, {
+     *   '$set': {
+     *     foo : 2
+     *   },
+     *   '$unset': {
+     *     bar: 1
+     *   }
+     * })
+     * ```
      *
      * @param {string} collectionName The collection's name.
      * @param {FilterQuery<T>} filter The filter for the documents.
@@ -575,6 +625,26 @@ export class MongoDatabase {
     /**
      * Update one document in a MongoDB collection.
      *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * // update first matching one with foo === 1
+     * // and set foo = 2 and remove bar prop
+     * await mongo.updateOne('my_collection', {
+     *   foo: 1
+     * }, {
+     *   '$set': {
+     *     foo : 2
+     *   },
+     *   '$unset': {
+     *     bar: 1
+     *   }
+     * })
+     * ```
+     *
      * @param {string} collectionName The collection's name.
      * @param {Filter<T>} filter The filter for the document.
      * @param {UpdateFilter<T>} update The update query for the document.
@@ -596,6 +666,21 @@ export class MongoDatabase {
 
     /**
      * Opens a new client connection if it doesn't exist and executes an action on it.
+     *
+     * @example
+     * ```
+     * import MongoDatabase from '@egomobile/mongo'
+     *
+     * const mongo = await MongoDatabase.open()
+     *
+     * const docs: any[] = await mongo.withClient(async (client, db) => {
+     *   const collection = db.collection('my_collection')
+     *
+     *   return collection.find({}).toArray()
+     * })
+     *
+     * console.log(docs)
+     * ```
      *
      * @param {WithMongoClientAction<TResult>} action The action to invoke.
      *

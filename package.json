@@ -1,7 +1,7 @@
 {
     "name": "@egomobile/mongo",
-    "version": "0.0.7",
-    "description": "Classes, functions and tools that help to connect and communicate to and with a NATS streaming server.",
+    "version": "0.1.0",
+    "description": "Classes, functions and tools, that help connecting to Mongo DB servers.",
     "main": "lib/index.js",
     "engines": {
         "node": ">=12.0.0"
