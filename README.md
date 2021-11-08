@@ -17,7 +17,7 @@ npm install --save @egomobile/mongo
 ## Usage
 
 ```typescript
-import MongoDatabase from "@egomobile/mongo";
+import { MongoDatabase } from "@egomobile/mongo";
 
 async function main() {
   // alternative:
