@@ -1,6 +1,6 @@
 {
     "name": "@egomobile/mongo",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "description": "Classes, functions and tools, that help connecting to Mongo DB servers.",
     "main": "lib/index.js",
     "engines": {
