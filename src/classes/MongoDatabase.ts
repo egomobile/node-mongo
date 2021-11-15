@@ -19,7 +19,6 @@
 import { MongoClient } from 'mongodb';
 import type { BulkWriteOptions, CountDocumentsOptions, CreateIndexesOptions, Db as MongoDb, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexSpecification, InsertManyResult, InsertOneResult, MongoClient as MongoDBClient, UpdateFilter, UpdateOptions, UpdateResult } from 'mongodb';
 import type { IMongoSchema } from '../types';
-import { isTruely } from '../utils';
 import { Nilable } from '../types';
 
 /**
@@ -35,18 +34,6 @@ export interface IMongoDatabaseOptions {
      * The name of the database.
      */
     db?: Nilable<string>;
-    /**
-     * Is Cosmos DB or not.
-     */
-    isCosmosDB?: Nilable<boolean>;
-    /**
-     * Use TLS or not.
-     */
-    isTls?: Nilable<boolean>;
-    /**
-     * TLS can be insecure or not.
-     */
-    isTlsInsecure?: Nilable<boolean>;
     /**
      * The URI.
      */
@@ -89,18 +76,12 @@ export function createGetMongoDatabaseOptionsFunc(name: string): GetMongoDatabas
     }
 
     return () => {
-        const MONGO_IS_COSMOSDB = process.env[`MONGO${envNameExtension}_IS_COSMOSDB`];
         const MONGO_DB = process.env[`MONGO${envNameExtension}_DB`]!.trim();
         const MONGO_URL = process.env[`MONGO${envNameExtension}_URL`]?.trim() || 'mongodb://localhost:27017';
-        const MONGO_TLS = process.env[`MONGO${envNameExtension}_TLS`];
-        const MONGO_TLS_INSECURE = process.env[`MONGO${envNameExtension}_TLS_INSECURE`];
 
         return {
-            isCosmosDB: isTruely(MONGO_IS_COSMOSDB),
             db: MONGO_DB,
-            url: MONGO_URL,
-            isTls: isTruely(MONGO_TLS),
-            isTlsInsecure: isTruely(MONGO_TLS_INSECURE)
+            url: MONGO_URL
         };
     };
 }
@@ -109,9 +90,6 @@ export function createGetMongoDatabaseOptionsFunc(name: string): GetMongoDatabas
  * Default action, that returns options, defined in following environment variables:
  *
  * - MONGO_DB => the name of the default database
- * - MONGO_IS_COSMOSDB => (optional) is Cosmos DB or not; default: (false)
- * - MONGO_TLS => (optional) use TLS or not; default: (false)
- * - MONGO_TLS_INSECURE => (optional) can use insecure TLS connection or not; default: (false)
  * - MONGO_URL => (optional) the URL to the connection; default: 'mongodb://localhost:27017'
  */
 export const defaultGetMongoDatabaseOptions = createGetMongoDatabaseOptionsFunc('');
@@ -152,12 +130,9 @@ export class MongoDatabase {
         const options = this.getOptions();
 
         try {
-            this._client = await MongoClient.connect(options.url, {
-                tls: options.isTls || undefined,
-                tlsInsecure: options.isTlsInsecure || undefined
-            });
+            this._client = await MongoClient.connect(options.url);
         } catch (ex) {
-            console.error('ex', ex);
+            console.error('ERROR', '@egomobile/mongo', ex);
         }
     }
 
@@ -187,15 +162,6 @@ export class MongoDatabase {
         filter?: Filter<T>,
         options?: CountDocumentsOptions
     ): Promise<number> {
-        const opts = this.getOptions();
-
-        if (opts.isCosmosDB) {
-            // some versions of Cosmos DB instances
-            // do not support 'count()' operations
-            // so we have to do a 'find()' first
-            return (await this.find<T>(collectionName, filter || {}, options)).length;
-        }
-
         return this.withClient((client, db) => {
             const collection = db.collection<T>(collectionName);
 
