@@ -56,9 +56,6 @@ export type WithMongoClientAction<TResult extends any = any> =
  * which are stored in environment variables:
  *
  * - MONGO{name}_DB => the name of the default database
- * - MONGO{name}_IS_COSMOSDB => (optional) is Cosmos DB or not; default: (false)
- * - MONGO{name}_TLS => (optional) use TLS or not; default: (false)
- * - MONGO{name}_TLS_INSECURE => (optional) can use insecure TLS connection or not; default: (false)
  * - MONGO{name}_URL => (optional) the URL to the connection; default: 'mongodb://localhost:27017'
  *
  * @param {string} name The name (or category) of the Mongo DB settings.
