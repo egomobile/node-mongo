@@ -16,5 +16,6 @@
 import { MongoDatabase } from '.';
 
 export * from './MongoDatabase';
+export * from './MongoCollection';
 
 export default MongoDatabase;

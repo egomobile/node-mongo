@@ -1,5 +1,9 @@
 # Change Log (@egomobile/mongo)
 
+## 1.2.0
+
+- add wrapper class `MongoCollection`, which can be created by `MongoDatabase.collection()` e.g.
+
 ## 1.0.0
 
 - stable release
