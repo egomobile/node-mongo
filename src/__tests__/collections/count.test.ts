@@ -42,7 +42,7 @@ describe('MongoCollection.count() method', () => {
                 expectedCount
             });
 
-            const count = await mongo.count(collectionName);
+            const count = await collection.count();
 
             // check count
             expect(typeof count).toBe('number');
