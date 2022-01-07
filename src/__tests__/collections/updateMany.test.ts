@@ -41,13 +41,8 @@ describe('MongoCollection.updateMany() method', () => {
             const expectedCount = (i + 1) * 2;
 
             // insert documents and get new array of documents
-            const docs2 = await mongo.withClient(async (client, db) => {
-                const collection = db.collection(collectionName);
-
-                await collection.insertMany(docsToInsert);
-
-                return collection.find().toArray();
-            });
+            await collection.insertMany(docsToInsert);
+            const docs2 = await collection.find({});
 
             // check count
             expect(typeof docs2.length).toBe('number');
