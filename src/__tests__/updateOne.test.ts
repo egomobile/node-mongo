@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('updateOne() method', () => {
+describe('MongoDatabase.updateOne() method', () => {
     it('should return documents with updated data after updating single one with a filter', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 

@@ -17,8 +17,8 @@ import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('count() method', () => {
-    it('should return 0 on init (collection)', async () => {
+describe('MongoCollection.count() method', () => {
+    it('should return 0 on init', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);

@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('createIndex() method', () => {
+describe('MongoDatabase.createIndex() method', () => {
     it('should have indicies after creation', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 

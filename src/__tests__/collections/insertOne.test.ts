@@ -17,8 +17,8 @@ import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('insertOne() method', () => {
-    it('should increase documents by 1 when inserting single document (collection)', async () => {
+describe('MongoCollection.insertOne() method', () => {
+    it('should increase documents by 1 when inserting single document', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);

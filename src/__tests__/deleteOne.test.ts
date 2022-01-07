@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('deleteOne() method', () => {
+describe('MongoDatabase.deleteOne() method', () => {
     it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 

@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('deleteMany() method', () => {
+describe('MongoDatabase.deleteMany() method', () => {
     it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 

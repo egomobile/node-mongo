@@ -17,8 +17,8 @@ import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('find() method', () => {
-    it('should return 0 if test collection is empty at beginning (collection)', async () => {
+describe('MongoCollection.find() method', () => {
+    it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -29,7 +29,7 @@ describe('find() method', () => {
         expect(docs.length).toBe(0);
     });
 
-    it('should return more than 0 if not using a filter in test collection (collection)', async () => {
+    it('should return more than 0 if not using a filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -75,7 +75,7 @@ describe('find() method', () => {
         }
     });
 
-    it('should return more than 0 if using a matching filter in test collection (collection)', async () => {
+    it('should return more than 0 if using a matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);

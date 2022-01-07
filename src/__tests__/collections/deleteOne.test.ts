@@ -17,8 +17,8 @@ import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('deleteOne() method', () => {
-    it('should return 0 if test collection is empty at beginning (collection)', async () => {
+describe('MongoCollection.deleteOne() method', () => {
+    it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -40,7 +40,7 @@ describe('deleteOne() method', () => {
         expect(docs2.length).toBe(0);
     });
 
-    it('should return more than 0 if documents in test collection are deleted by filter (collection)', async () => {
+    it('should return more than 0 if documents in test collection are deleted by filter', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);

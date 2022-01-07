@@ -17,8 +17,8 @@ import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('findOne() method', () => {
-    it('should return (null) if test collection is empty at beginning (collection)', async () => {
+describe('MongoCollection.findOne() method', () => {
+    it('should return (null) if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -28,7 +28,7 @@ describe('findOne() method', () => {
         expect(doc).toBe(null);
     });
 
-    it('should return a document if using no filter in test collection (collection)', async () => {
+    it('should return a document if using no filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -72,7 +72,7 @@ describe('findOne() method', () => {
         }
     });
 
-    it('should return a document if using a matching filter in test collection (collection)', async () => {
+    it('should return a document if using a matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -118,7 +118,7 @@ describe('findOne() method', () => {
         }
     });
 
-    it('should return (null) if using a non-matching filter in test collection (collection)', async () => {
+    it('should return (null) if using a non-matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);

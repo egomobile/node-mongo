@@ -17,8 +17,8 @@ import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('insertMany() method', () => {
-    it('should return documents if inserting elements to test collection (collection)', async () => {
+describe('MongoCollection.insertMany() method', () => {
+    it('should return documents if inserting elements to test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);

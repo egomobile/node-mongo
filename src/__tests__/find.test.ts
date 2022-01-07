@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('find() method', () => {
+describe('MongoDatabase.find() method', () => {
     it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
