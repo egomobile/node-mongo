@@ -19,6 +19,9 @@ npm install --save @egomobile/mongo
 ```typescript
 import { MongoDatabase } from "@egomobile/mongo";
 
+// set MONGO_DB env variable with the name of the database
+// set MONGO_URL env variable with the mongo connection URI
+
 async function main() {
   // alternative:
   //
