@@ -13,48 +13,43 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('MongoDatabase.updateOne() method', () => {
-    it('should return documents with updated data after updating single one with a filter', async () => {
+describe('MongoCollection.updateMany() method', () => {
+    it('should return documents with updated data after updating many with a filter', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
 
-        // must be 0 / empty at the beginning
+        const docs1 = await collection.find({});
+
+        // must be 0 / empty at beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
                 foo: 1,
-                bar: 11,
-                index: i * 2
+                bar: 11
             }, {
                 foo: '2',
-                bar: 222,
-                index: i * 2 + 1
+                bar: 222
             }];
 
             const expectedCount = (i + 1) * 2;
 
-            // insert and return new array of documents
-            const docs2 = await mongo.withClient(async (client, db) => {
-                const collection = db.collection(collectionName);
-
-                await collection.insertMany(docsToInsert);
-
-                return collection.find().toArray();
-            });
+            // insert documents and get new array of documents
+            await collection.insertMany(docsToInsert);
+            const docs2 = await collection.find({});
 
             // check count
             expect(typeof docs2.length).toBe('number');
             expect(docs2.length).toBe(expectedCount);
 
-            // update first one
-            await mongo.updateOne<any>(collectionName, {
+            // update all with foo === 1
+            await collection.updateMany({
                 foo: 1
             }, {
                 $set: {
@@ -62,29 +57,21 @@ describe('MongoDatabase.updateOne() method', () => {
                 }
             });
 
-            // recheck current data
-            const docs3 = await mongo.withClient(async (client, db) => {
-                const collection = db.collection(collectionName);
+            // check current data
+            const docs3 = await collection.find({});
 
-                return collection.find({}).toArray();
-            });
-
-            // should be same count
+            // if count did not change
             expect(typeof docs3.length).toBe('number');
             expect(docs3.length).toBe(expectedCount);
 
             // get updated documents
-            const docs4 = await mongo.withClient(async (client, db) => {
-                const collection = db.collection(collectionName);
-
-                return collection.find({
-                    foo: '11'
-                }).toArray();
+            const docs4 = await collection.find({
+                foo: '11'
             });
 
-            // check its count
+            // and check count
             expect(typeof docs4.length).toBe('number');
-            expect(docs4.length).toBe(expectedCount / 2);  // should be half of total count
+            expect(docs4.length).toBe(expectedCount / 2);  // must be half of total count
         }
     });
 });

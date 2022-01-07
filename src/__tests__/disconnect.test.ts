@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('disconnect() method', () => {
+describe('MongoDatabase.disconnect() method', () => {
     it('should throw error if connection is closed', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 

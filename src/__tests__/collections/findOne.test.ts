@@ -13,15 +13,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('MongoDatabase.findOne() method', () => {
+describe('MongoCollection.findOne() method', () => {
     it('should return (null) if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const doc = await mongo.findOne(collectionName, {});
+        const collection = mongo.collection(collectionName);
+
+        const doc = await collection.findOne({});
 
         expect(doc).toBe(null);
     });
@@ -29,7 +31,9 @@ describe('MongoDatabase.findOne() method', () => {
     it('should return a document if using no filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
@@ -55,13 +59,9 @@ describe('MongoDatabase.findOne() method', () => {
             }];
 
             // insert test data
-            await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
+            await collection.insertMany(docsToInsert);
 
-                return collection.insertMany(docsToInsert);
-            });
-
-            const doc: any = await mongo.findOne(collectionName, {});
+            const doc: any = await collection.findOne({});
 
             // check data
             expect(typeof doc).toBe('object');
@@ -75,7 +75,9 @@ describe('MongoDatabase.findOne() method', () => {
     it('should return a document if using a matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
@@ -101,13 +103,9 @@ describe('MongoDatabase.findOne() method', () => {
             }];
 
             // insert test data
-            await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
+            await collection.insertMany(docsToInsert);
 
-                return collection.insertMany(docsToInsert);
-            });
-
-            const doc: any = await mongo.findOne(collectionName, {
+            const doc: any = await collection.findOne({
                 foo: 1
             });
 
@@ -123,7 +121,9 @@ describe('MongoDatabase.findOne() method', () => {
     it('should return (null) if using a non-matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
@@ -147,13 +147,9 @@ describe('MongoDatabase.findOne() method', () => {
             }];
 
             // insert test data
-            await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
+            await collection.insertMany(docsToInsert);
 
-                return collection.insertMany(docsToInsert);
-            });
-
-            const doc: any = await mongo.findOne(collectionName, {
+            const doc: any = await collection.findOne({
                 foo: 3
             });
 

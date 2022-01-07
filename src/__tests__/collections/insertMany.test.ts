@@ -13,15 +13,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('MongoDatabase.insertMany() method', () => {
+describe('MongoCollection.insertMany() method', () => {
     it('should return documents if inserting elements to test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
@@ -49,14 +51,10 @@ describe('MongoDatabase.insertMany() method', () => {
             const expectedCount = docsToInsert.length * (i + 1);
 
             // insert bulk of data
-            await mongo.insertMany(collectionName, docsToInsert);
+            await collection.insertMany(docsToInsert);
 
             // reload documents
-            const docs = await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
-
-                return collection.find({}).toArray();
-            });
+            const docs = await collection.find({});
 
             // check count
             expect(typeof docs.length).toBe('number');

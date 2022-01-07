@@ -13,15 +13,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('MongoDatabase.find() method', () => {
+describe('MongoCollection.find() method', () => {
     it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs = await mongo.find(collectionName, {});
+        const collection = mongo.collection(collectionName);
+
+        const docs = await collection.find({});
 
         expect(typeof docs.length).toBe('number');
         expect(docs.length).toBe(0);
@@ -30,7 +32,9 @@ describe('MongoDatabase.find() method', () => {
     it('should return more than 0 if not using a filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
@@ -52,13 +56,9 @@ describe('MongoDatabase.find() method', () => {
             const expectedCount = docsToInsert.length * (i + 1);
 
             // insert test data
-            await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
+            await collection.insertMany(docsToInsert);
 
-                return collection.insertMany(docsToInsert);
-            });
-
-            const docs = await mongo.find(collectionName, {});
+            const docs = await collection.find({});
 
             // check new count
             expect(typeof docs.length).toBe('number');
@@ -78,7 +78,9 @@ describe('MongoDatabase.find() method', () => {
     it('should return more than 0 if using a matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
@@ -102,14 +104,10 @@ describe('MongoDatabase.find() method', () => {
             const expectedCount = (i + 1) * 2;
 
             // insert test data
-            await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
-
-                return collection.insertMany(docsToInsert);
-            });
+            await collection.insertMany(docsToInsert);
 
             // use a filter
-            const docs = await mongo.find(collectionName, {
+            const docs = await collection.find({
                 foo: 1
             });
 
@@ -130,7 +128,9 @@ describe('MongoDatabase.find() method', () => {
     it('should return 0 if using a non-matching filter in test collection', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
@@ -154,13 +154,9 @@ describe('MongoDatabase.find() method', () => {
 
             const expectedCount = 0;
 
-            await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
+            await collection.insertMany(docsToInsert);
 
-                return collection.insertMany(docsToInsert);
-            });
-
-            const docs = await mongo.find(collectionName, {
+            const docs = await collection.find({
                 foo: 3
             });
 

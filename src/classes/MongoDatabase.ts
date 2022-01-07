@@ -20,6 +20,7 @@ import { MongoClient } from 'mongodb';
 import type { BulkWriteOptions, CountDocumentsOptions, CreateIndexesOptions, Db as MongoDb, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexSpecification, InsertManyResult, InsertOneResult, MongoClient as MongoDBClient, UpdateFilter, UpdateOptions, UpdateResult } from 'mongodb';
 import type { IMongoSchema } from '../types';
 import { Nilable } from '../types';
+import { MongoCollection } from './MongoCollection';
 
 /**
  * A function, that returns the options for a mongo database connection.
@@ -172,6 +173,23 @@ export class MongoDatabase {
                 return collection.countDocuments() as Promise<number>;
             }
         });
+    }
+
+    /**
+     * Creates a types collection instance by name.
+     *
+     * @param {string} name The name of the collection.
+     *
+     * @returns {MongoCollection} The new instance.
+     */
+    public collection<T extends any = Document>(name: string): MongoCollection<T> {
+        const options = this.getOptions();
+
+        const client = this.getClient();
+        const db = client.db(options.db!);
+        const collection = db.collection<any>(name);
+
+        return new MongoCollection<T>(this, collection);
     }
 
     /**

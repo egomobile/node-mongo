@@ -13,27 +13,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('MongoDatabase.deleteOne() method', () => {
+describe('MongoCollection.deleteMany() method', () => {
     it('should return 0 if test collection is empty at beginning', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
 
-        // should be 0 / empty at the beginning
+        const docs1 = await collection.find({});
+
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
-        await mongo.deleteOne(collectionName, {
+        await collection.deleteMany({
             foo: 1
         });
 
-        const docs2 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const docs2 = await collection.find({});
 
-        // should still be 0 / empty at the beginning
         expect(typeof docs2.length).toBe('number');
         expect(docs2.length).toBe(0);
     });
@@ -41,18 +41,16 @@ describe('MongoDatabase.deleteOne() method', () => {
     it('should return more than 0 if documents in test collection are deleted by filter', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const collection = mongo.collection(collectionName);
+
+        const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
         expect(typeof docs1.length).toBe('number');
         expect(docs1.length).toBe(0);
 
-        let expectedCount = 0;
-
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
-                foo: 1
-            }, {
                 foo: 1
             }, {
                 foo: 2
@@ -66,27 +64,18 @@ describe('MongoDatabase.deleteOne() method', () => {
                 foo: true
             }];
 
-            expectedCount += docsToInsert.length;
-            expectedCount += -1;
+            const expectedCount = (i + 1) * (docsToInsert.length - 1);
 
             // insert test data
-            await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
+            await collection.insertMany(docsToInsert);
 
-                return collection.insertMany(docsToInsert);
-            });
-
-            // remove first with foo === 1
-            await mongo.deleteOne(collectionName, {
+            // delete elements
+            await collection.deleteMany({
                 foo: 1
             });
 
             // reload data
-            const docs = await mongo.withClient((client, db) => {
-                const collection = db.collection(collectionName);
-
-                return collection.find({}).toArray();
-            });
+            const docs = await collection.find({});
 
             // check count
             expect(typeof docs.length).toBe('number');

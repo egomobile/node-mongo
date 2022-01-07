@@ -19,6 +19,9 @@ npm install --save @egomobile/mongo
 ```typescript
 import { MongoDatabase } from "@egomobile/mongo";
 
+// set MONGO_DB env variable with the name of the database
+// set MONGO_URL env variable with the mongo connection URI
+
 async function main() {
   // alternative:
   //
@@ -33,13 +36,15 @@ async function main() {
   // then return 3 as exit code
   mongo.exitOnClose(3);
 
+  const my_collection = mongo.collection("my_collection");
+
   // count documents; should be 0
-  const count1 = await mongo.count("my_collection", {});
-  const count2 = await mongo.count("my_collection", { foo: 1 });
+  const count1 = await my_collection.count({});
+  const count2 = await my_collection.count({ foo: 1 });
 
   // insert single or many documents
-  await mongo.insertOne("my_collection", { foo: 1 });
-  await mongo.insertMany("my_collection", [
+  await my_collection.insertOne({ foo: 1 });
+  await my_collection.insertMany([
     {
       foo: 1,
     },
@@ -50,19 +55,17 @@ async function main() {
   ]);
 
   // find documents
-  const firstMatchingDoc = await mongo.findOne("my_collection", { foo: 1 });
-  const matchingDocs = await mongo.find("my_collection", { foo: 2 });
+  const firstMatchingDoc = await my_collection.findOne({ foo: 1 });
+  const matchingDocs = await my_collection.find({ foo: 2 });
 
   // update documents
-  await mongo.updateOne(
-    "my_collection",
+  await my_collection.updateOne(
     { foo: 1 },
     {
       foo: "11",
     }
   );
-  await mongo.updateMany(
-    "my_collection",
+  await my_collection.updateMany(
     { foo: 2 },
     {
       foo: "222",
@@ -70,8 +73,8 @@ async function main() {
   );
 
   // delete documents
-  await mongo.deleteOne("my_collection", { foo: 1 });
-  await mongo.deleteMany("my_collection", { foo: 2 });
+  await my_collection.deleteOne({ foo: 1 });
+  await my_collection.deleteMany({ foo: 2 });
 
   // do some low-level operations
   await mongo.withClient(async (client, db) => {

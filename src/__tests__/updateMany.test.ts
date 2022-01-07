@@ -17,7 +17,7 @@ import { MongoDatabase } from '..';
 
 const collectionName = 'test';
 
-describe('updateMany() method', () => {
+describe('MongoDatabase.updateMany() method', () => {
     it('should return documents with updated data after updating many with a filter', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 

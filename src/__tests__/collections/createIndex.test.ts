@@ -13,25 +13,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from '../..';
 
 const collectionName = 'test';
 
-describe('MongoDatabase.createIndex() method', () => {
+describe('MongoCollection.createIndex() method', () => {
     it('should have indicies after creation', async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
+        const collection = mongo.collection(collectionName);
+
         // create index
-        await mongo.createIndex(collectionName, {
+        await collection.createIndex({
             foo: 1,
             bar: -1
         });
 
-        const indexes = await mongo.withClient((client, db) => {
-            const collection = db.collection(collectionName);
-
-            return collection.indexes();
-        });
+        const indexes = await collection.collection.indexes();
 
         // check data
         expect(Array.isArray(indexes)).toBe(true);
