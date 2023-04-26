@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '../..';
+import { MongoDatabase } from "../..";
 
-const collectionName = 'test';
+const collectionName = "test";
 
-describe('MongoCollection.findOne() method', () => {
-    it('should return (null) if test collection is empty at beginning', async () => {
+describe("MongoCollection.findOne() method", () => {
+    it("should return (null) if test collection is empty at beginning", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -28,7 +28,7 @@ describe('MongoCollection.findOne() method', () => {
         expect(doc).toBe(null);
     });
 
-    it('should return a document if using no filter in test collection', async () => {
+    it("should return a document if using no filter in test collection", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -36,26 +36,26 @@ describe('MongoCollection.findOne() method', () => {
         const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
-        expect(typeof docs1.length).toBe('number');
+        expect(typeof docs1.length).toBe("number");
         expect(docs1.length).toBe(0);
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
-                foo: '1',
-                bar: 11
+                "foo": "1",
+                "bar": 11
             }, {
-                foo: 1,
-                bar: '11'
+                "foo": 1,
+                "bar": "11"
             }, {
-                foo: 2
+                "foo": 2
             }, {}, {
-                foo: null
+                "foo": null
             }, {
-                foo: 1
+                "foo": 1
             }, {
-                foo: new Date()
+                "foo": new Date()
             }, {
-                foo: true
+                "foo": true
             }];
 
             // insert test data
@@ -64,15 +64,15 @@ describe('MongoCollection.findOne() method', () => {
             const doc: any = await collection.findOne({});
 
             // check data
-            expect(typeof doc).toBe('object');
-            expect(typeof doc.foo).toBe('string');
-            expect(doc.foo).toBe('1');
-            expect(typeof doc.bar).toBe('number');
+            expect(typeof doc).toBe("object");
+            expect(typeof doc.foo).toBe("string");
+            expect(doc.foo).toBe("1");
+            expect(typeof doc.bar).toBe("number");
             expect(doc.bar).toBe(11);
         }
     });
 
-    it('should return a document if using a matching filter in test collection', async () => {
+    it("should return a document if using a matching filter in test collection", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -80,45 +80,45 @@ describe('MongoCollection.findOne() method', () => {
         const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
-        expect(typeof docs1.length).toBe('number');
+        expect(typeof docs1.length).toBe("number");
         expect(docs1.length).toBe(0);
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
-                foo: 1,
-                bar: 11
+                "foo": 1,
+                "bar": 11
             }, {
-                foo: 1,
-                bar: '11'
+                "foo": 1,
+                "bar": "11"
             }, {
-                foo: 2
+                "foo": 2
             }, {}, {
-                foo: null
+                "foo": null
             }, {
-                foo: '1'
+                "foo": "1"
             }, {
-                foo: new Date()
+                "foo": new Date()
             }, {
-                foo: true
+                "foo": true
             }];
 
             // insert test data
             await collection.insertMany(docsToInsert);
 
             const doc: any = await collection.findOne({
-                foo: 1
+                "foo": 1
             });
 
             // check data
-            expect(typeof doc).toBe('object');
-            expect(typeof doc.foo).toBe('number');
+            expect(typeof doc).toBe("object");
+            expect(typeof doc.foo).toBe("number");
             expect(doc.foo).toBe(1);
-            expect(typeof doc.bar).toBe('number');
+            expect(typeof doc.bar).toBe("number");
             expect(doc.bar).toBe(11);
         }
     });
 
-    it('should return (null) if using a non-matching filter in test collection', async () => {
+    it("should return (null) if using a non-matching filter in test collection", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -126,31 +126,31 @@ describe('MongoCollection.findOne() method', () => {
         const docs1 = await collection.find({});
 
         // should be 0 / empty at the beginning
-        expect(typeof docs1.length).toBe('number');
+        expect(typeof docs1.length).toBe("number");
         expect(docs1.length).toBe(0);
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
-                foo: 1
+                "foo": 1
             }, {
-                foo: 2
+                "foo": 2
             }, {}, {
-                foo: null
+                "foo": null
             }, {
-                foo: '1'
+                "foo": "1"
             }, {
-                foo: new Date()
+                "foo": new Date()
             }, {
-                foo: 1
+                "foo": 1
             }, {
-                foo: true
+                "foo": true
             }];
 
             // insert test data
             await collection.insertMany(docsToInsert);
 
             const doc: any = await collection.findOne({
-                foo: 3
+                "foo": 3
             });
 
             // check data

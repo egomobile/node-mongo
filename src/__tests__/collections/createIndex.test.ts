@@ -13,20 +13,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '../..';
+import { MongoDatabase } from "../..";
 
-const collectionName = 'test';
+const collectionName = "test";
 
-describe('MongoCollection.createIndex() method', () => {
-    it('should have indicies after creation', async () => {
+describe("MongoCollection.createIndex() method", () => {
+    it("should have indicies after creation", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
 
         // create index
         await collection.createIndex({
-            foo: 1,
-            bar: -1
+            "foo": 1,
+            "bar": -1
         });
 
         const indexes = await collection.collection.indexes();
@@ -34,13 +34,13 @@ describe('MongoCollection.createIndex() method', () => {
         // check data
         expect(Array.isArray(indexes)).toBe(true);
         expect(indexes.length).toBe(2);
-        expect(typeof indexes[1]).toBe('object');
-        expect(typeof indexes[1].key).toBe('object');
-        expect(typeof indexes[1].key.foo).toBe('number');
+        expect(typeof indexes[1]).toBe("object");
+        expect(typeof indexes[1].key).toBe("object");
+        expect(typeof indexes[1].key.foo).toBe("number");
         expect(indexes[1].key.foo).toBe(1);
-        expect(typeof indexes[1].key.bar).toBe('number');
+        expect(typeof indexes[1].key.bar).toBe("number");
         expect(indexes[1].key.bar).toBe(-1);
-        expect(typeof indexes[1].name).toBe('string');
-        expect(indexes[1].name).toBe('foo_1_bar_-1');
+        expect(typeof indexes[1].name).toBe("string");
+        expect(indexes[1].name).toBe("foo_1_bar_-1");
     });
 });

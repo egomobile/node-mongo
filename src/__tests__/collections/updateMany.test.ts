@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '../..';
+import { MongoDatabase } from "../..";
 
-const collectionName = 'test';
+const collectionName = "test";
 
-describe('MongoCollection.updateMany() method', () => {
-    it('should return documents with updated data after updating many with a filter', async () => {
+describe("MongoCollection.updateMany() method", () => {
+    it("should return documents with updated data after updating many with a filter", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const collection = mongo.collection(collectionName);
@@ -26,16 +26,16 @@ describe('MongoCollection.updateMany() method', () => {
         const docs1 = await collection.find({});
 
         // must be 0 / empty at beginning
-        expect(typeof docs1.length).toBe('number');
+        expect(typeof docs1.length).toBe("number");
         expect(docs1.length).toBe(0);
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
-                foo: 1,
-                bar: 11
+                "foo": 1,
+                "bar": 11
             }, {
-                foo: '2',
-                bar: 222
+                "foo": "2",
+                "bar": 222
             }];
 
             const expectedCount = (i + 1) * 2;
@@ -45,15 +45,15 @@ describe('MongoCollection.updateMany() method', () => {
             const docs2 = await collection.find({});
 
             // check count
-            expect(typeof docs2.length).toBe('number');
+            expect(typeof docs2.length).toBe("number");
             expect(docs2.length).toBe(expectedCount);
 
             // update all with foo === 1
             await collection.updateMany({
-                foo: 1
+                "foo": 1
             }, {
-                $set: {
-                    foo: '11'
+                "$set": {
+                    "foo": "11"
                 }
             });
 
@@ -61,16 +61,16 @@ describe('MongoCollection.updateMany() method', () => {
             const docs3 = await collection.find({});
 
             // if count did not change
-            expect(typeof docs3.length).toBe('number');
+            expect(typeof docs3.length).toBe("number");
             expect(docs3.length).toBe(expectedCount);
 
             // get updated documents
             const docs4 = await collection.find({
-                foo: '11'
+                "foo": "11"
             });
 
             // and check count
-            expect(typeof docs4.length).toBe('number');
+            expect(typeof docs4.length).toBe("number");
             expect(docs4.length).toBe(expectedCount / 2);  // must be half of total count
         }
     });

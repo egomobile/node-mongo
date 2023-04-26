@@ -1,12 +1,13 @@
+/* eslint-disable jsdoc/valid-types */
 /* eslint-disable unicorn/filename-case */
 
-import type { BulkWriteOptions, CountDocumentsOptions, Collection, CreateIndexesOptions, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexSpecification, InsertManyResult, InsertOneResult, UpdateFilter, UpdateOptions, UpdateResult } from 'mongodb';
-import type { MongoDatabase } from './MongoDatabase';
+import type { BulkWriteOptions, CountDocumentsOptions, Collection, CreateIndexesOptions, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexSpecification, InsertManyResult, InsertOneResult, UpdateFilter, UpdateOptions, UpdateResult, WithId } from "mongodb";
+import type { MongoDatabase } from "./MongoDatabase";
 
 /**
  * A typed Mongo collection.
  */
-export class MongoCollection<T extends any = any> {
+export class MongoCollection<T extends Document = Document> {
     /**
      * Creates a new instance of that class.
      *
@@ -145,9 +146,9 @@ export class MongoCollection<T extends any = any> {
      * @param {Filter<T>} filter The filter.
      * @param {FindOptions<T>} [options] Custom options.
      *
-     * @returns {Promise<T[]>} The promise with the result.
+     * @returns {Promise<WithId<T>[]>} The promise with the result.
      */
-    public find(filter: Filter<T>, options?: FindOptions<any>): Promise<T[]> {
+    public find(filter: Filter<T>, options?: FindOptions<any>): Promise<WithId<T>[]> {
         return this.db.find(this.collection.collectionName, filter, options);
     }
 
@@ -171,9 +172,9 @@ export class MongoCollection<T extends any = any> {
      * @param {Filter<T>} filter The filter.
      * @param {FindOptions<T>} [options] Custom options.
      *
-     * @returns {Promise<T|null>} The promise with the result or (null) if not found.
+     * @returns {Promise<WithId<T>|null>} The promise with the result or (null) if not found.
      */
-    public findOne(filter: Filter<T>, options?: FindOptions<any>): Promise<T | null> {
+    public findOne(filter: Filter<T>, options?: FindOptions<any>): Promise<WithId<T> | null> {
         return this.db.findOne(this.collection.collectionName, filter, options);
     }
 

@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import dotenv from 'dotenv';
-import path from 'path';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MongoDatabase } from './classes/MongoDatabase';
+import dotenv from "dotenv";
+import path from "path";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { MongoDatabase } from "./classes/MongoDatabase";
 
 jest.setTimeout(60000);
 
 dotenv.config({
-    path: path.join(__dirname, '.env.tests')
+    "path": path.join(__dirname, ".env.tests")
 });
 
 let m: MongoDatabase | undefined;
@@ -29,18 +29,21 @@ let server: MongoMemoryServer | undefined;
 
 beforeAll(async () => {
     server = new MongoMemoryServer();
+    await server.start();
 
-    const url = await server.getUri();
-    const db = 'test';
+    const url = server.getUri();
+    const db = "test";
 
     process.env.MONGO_DB = db;
     process.env.MONGO_URL = url;
 
-    m = new MongoDatabase(() => ({
-        db,
-        isCosmosDB: true,
-        url
-    }));
+    m = new MongoDatabase(() => {
+        return {
+            db,
+            "isCosmosDB": true,
+            url
+        };
+    });
 
     (global as any).mongo = m;
 });

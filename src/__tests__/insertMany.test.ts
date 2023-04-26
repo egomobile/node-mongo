@@ -13,37 +13,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from "..";
 
-const collectionName = 'test';
+const collectionName = "test";
 
-describe('MongoDatabase.insertMany() method', () => {
-    it('should return documents if inserting elements to test collection', async () => {
+describe("MongoDatabase.insertMany() method", () => {
+    it("should return documents if inserting elements to test collection", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const docs1 = await mongo.withClient((client, db) => {
+            return db.collection(collectionName).find({}).toArray();
+        });
 
         // should be 0 / empty at the beginning
-        expect(typeof docs1.length).toBe('number');
+        expect(typeof docs1.length).toBe("number");
         expect(docs1.length).toBe(0);
 
         for (let i = 0; i < 100; i++) {
             const docsToInsert = [{
-                foo: 1,
-                bar: 11
+                "foo": 1,
+                "bar": 11
             }, {
-                foo: 1,
-                bar: '11'
+                "foo": 1,
+                "bar": "11"
             }, {
-                foo: 2
+                "foo": 2
             }, {
-                foo: null
+                "foo": null
             }, {
-                foo: '1'
+                "foo": "1"
             }, {
-                foo: new Date()
+                "foo": new Date()
             }, {
-                foo: true
+                "foo": true
             }];
 
             const expectedCount = docsToInsert.length * (i + 1);
@@ -59,12 +61,12 @@ describe('MongoDatabase.insertMany() method', () => {
             });
 
             // check count
-            expect(typeof docs.length).toBe('number');
+            expect(typeof docs.length).toBe("number");
             expect(docs.length).toBe(expectedCount);
 
             // check data
             for (const d of docs) {
-                expect(typeof d.foo).not.toBe('undefined');
+                expect(typeof d.foo).not.toBe("undefined");
             }
         }
     });

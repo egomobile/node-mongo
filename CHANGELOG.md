@@ -1,5 +1,12 @@
 # Change Log (@egomobile/mongo)
 
+## 2.0.0
+
+- refactored to use it with [mongodb 5.3+](https://www.npmjs.com/package/mongodb)
+- upgrade to new [linter rules](https://github.com/egomobile/eslint-config-ego)
+- changed `Nilable`, `Nullable` and `Optional` types to internal ones
+- other bug fixes and improvements
+
 ## 1.2.0
 
 - add wrapper class `MongoCollection`, which can be created by `MongoDatabase.collection()` e.g.

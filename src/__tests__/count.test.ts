@@ -13,21 +13,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from "..";
 
-const collectionName = 'test';
+const collectionName = "test";
 
-describe('MongoDatabase.count() method', () => {
-    it('should return 0 on init', async () => {
+describe("MongoDatabase.count() method", () => {
+    it("should return 0 on init", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         const countTest = await mongo.count(collectionName);
 
-        expect(typeof countTest).toBe('number');
+        expect(typeof countTest).toBe("number");
         expect(countTest).toBe(0);
     });
 
-    it('should return the count based on the inserted documents', async () => {
+    it("should return the count based on the inserted documents", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         for (let i = 0; i < 100; i++) {
@@ -45,7 +45,7 @@ describe('MongoDatabase.count() method', () => {
             const count = await mongo.count(collectionName);
 
             // check count
-            expect(typeof count).toBe('number');
+            expect(typeof count).toBe("number");
             expect(count).toBe(expectedCount);
         }
     });

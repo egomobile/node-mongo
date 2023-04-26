@@ -13,26 +13,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from "..";
 
-const collectionName = 'test';
+const collectionName = "test";
 
-describe('MongoDatabase.insertOne() method', () => {
-    it('should increase documents by 1 when inserting single document', async () => {
+describe("MongoDatabase.insertOne() method", () => {
+    it("should increase documents by 1 when inserting single document", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
-        const docs1 = await mongo.withClient((client, db) => db.collection(collectionName).find({}).toArray());
+        const docs1 = await mongo.withClient((client, db) => {
+            return db.collection(collectionName).find({}).toArray();
+        });
 
         // should be empty / 0 at the beginning
-        expect(typeof docs1.length).toBe('number');
+        expect(typeof docs1.length).toBe("number");
         expect(docs1.length).toBe(0);
 
         let expectedCount = 0;
 
         for (let i = 0; i < 100; i++) {
             const docToInsert = {
-                foo: 1,
-                bar: '11'
+                "foo": 1,
+                "bar": "11"
             };
 
             ++expectedCount;
@@ -47,15 +49,15 @@ describe('MongoDatabase.insertOne() method', () => {
             });
 
             // check count
-            expect(typeof docs.length).toBe('number');
+            expect(typeof docs.length).toBe("number");
             expect(docs.length).toBe(expectedCount);
 
             // check data
             for (const d of docs) {
-                expect(typeof d.foo).toBe('number');
+                expect(typeof d.foo).toBe("number");
                 expect(d.foo).toBe(1);
-                expect(typeof d.bar).toBe('string');
-                expect(d.bar).toBe('11');
+                expect(typeof d.bar).toBe("string");
+                expect(d.bar).toBe("11");
             }
         }
     });

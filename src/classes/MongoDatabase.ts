@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/valid-types */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable unicorn/filename-case */
 
@@ -16,11 +17,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoClient } from 'mongodb';
-import type { BulkWriteOptions, CountDocumentsOptions, CreateIndexesOptions, Db as MongoDb, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexSpecification, InsertManyResult, InsertOneResult, MongoClient as MongoDBClient, UpdateFilter, UpdateOptions, UpdateResult } from 'mongodb';
-import type { IMongoSchema } from '../types';
-import { Nilable } from '../types';
-import { MongoCollection } from './MongoCollection';
+import { MongoClient, WithId } from "mongodb";
+import type { BulkWriteOptions, CountDocumentsOptions, CreateIndexesOptions, Db as MongoDb, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexSpecification, InsertManyResult, InsertOneResult, MongoClient as MongoDBClient, UpdateFilter, UpdateOptions, UpdateResult } from "mongodb";
+import { Nilable } from "../types/internal";
+import { MongoCollection } from "./MongoCollection";
 
 /**
  * A function, that returns the options for a mongo database connection.
@@ -64,22 +64,22 @@ export type WithMongoClientAction<TResult extends any = any> =
  * @returns {GetMongoDatabaseOptions} The new function.
  */
 export function createGetMongoDatabaseOptionsFunc(name: string): GetMongoDatabaseOptions {
-    if (typeof name !== 'string') {
-        throw new TypeError('category must be of type string');
+    if (typeof name !== "string") {
+        throw new TypeError("category must be of type string");
     }
 
     let envNameExtension = name.toUpperCase().trim();
     if (envNameExtension.length) {
-        envNameExtension = '_' + envNameExtension;
+        envNameExtension = "_" + envNameExtension;
     }
 
     return () => {
         const MONGO_DB = process.env[`MONGO${envNameExtension}_DB`]!.trim();
-        const MONGO_URL = process.env[`MONGO${envNameExtension}_URL`]?.trim() || 'mongodb://localhost:27017';
+        const MONGO_URL = process.env[`MONGO${envNameExtension}_URL`]?.trim() || "mongodb://localhost:27017";
 
         return {
-            db: MONGO_DB,
-            url: MONGO_URL
+            "db": MONGO_DB,
+            "url": MONGO_URL
         };
     };
 }
@@ -90,7 +90,7 @@ export function createGetMongoDatabaseOptionsFunc(name: string): GetMongoDatabas
  * - MONGO_DB => the name of the default database
  * - MONGO_URL => (optional) the URL to the connection; default: 'mongodb://localhost:27017'
  */
-export const defaultGetMongoDatabaseOptions = createGetMongoDatabaseOptionsFunc('');
+export const defaultGetMongoDatabaseOptions = createGetMongoDatabaseOptionsFunc("");
 
 /**
  * A connection to a MongoDB database.
@@ -104,18 +104,21 @@ export class MongoDatabase {
     /**
      * Initializes a new instance of that class.
      *
-     * @param {IMongoDatabaseOptions} [optionsOrFunc] Custom options or the function, that provides it.
+     * @param {IMongoDatabaseOptions|GetMongoDatabaseOptions} [optionsOrFunc] Custom options or the function, that provides it.
      */
     constructor(optionsOrFunc: IMongoDatabaseOptions | GetMongoDatabaseOptions = defaultGetMongoDatabaseOptions) {
         let getOptions: GetMongoDatabaseOptions;
-        if (typeof optionsOrFunc === 'function') {
+        if (typeof optionsOrFunc === "function") {
             getOptions = optionsOrFunc;
-        } else {
-            getOptions = () => optionsOrFunc;
+        }
+        else {
+            getOptions = () => {
+                return optionsOrFunc;
+            };
         }
 
-        if (typeof getOptions !== 'function') {
-            throw new TypeError('optionsOrFunc must be a function or object');
+        if (typeof getOptions !== "function") {
+            throw new TypeError("optionsOrFunc must be a function or object");
         }
 
         this.getOptions = getOptions;
@@ -129,8 +132,9 @@ export class MongoDatabase {
 
         try {
             this._client = await MongoClient.connect(options.url);
-        } catch (ex) {
-            console.error('ERROR', '@egomobile/mongo', ex);
+        }
+        catch (ex) {
+            console.error("ERROR", "@egomobile/mongo", ex);
         }
     }
 
@@ -155,7 +159,7 @@ export class MongoDatabase {
      *
      * @returns {Promise<number>} The promise with the number of documents.
      */
-    public async count<T = Document>(
+    public async count<T extends Document = Document>(
         collectionName: string,
         filter?: Filter<T>,
         options?: CountDocumentsOptions
@@ -165,12 +169,14 @@ export class MongoDatabase {
 
             if (filter) {
                 if (options) {
-                    return collection.countDocuments(filter, options) as Promise<number>;
-                } else {
-                    return collection.countDocuments(filter) as Promise<number>;
+                    return collection.countDocuments(filter, options);
                 }
-            } else {
-                return collection.countDocuments() as Promise<number>;
+                else {
+                    return collection.countDocuments(filter);
+                }
+            }
+            else {
+                return collection.countDocuments();
             }
         });
     }
@@ -182,7 +188,7 @@ export class MongoDatabase {
      *
      * @returns {MongoCollection} The new instance.
      */
-    public collection<T extends any = Document>(name: string): MongoCollection<T> {
+    public collection<T extends Document = Document>(name: string): MongoCollection<T> {
         const options = this.getOptions();
 
         const client = this.getClient();
@@ -219,7 +225,8 @@ export class MongoDatabase {
 
             if (options) {
                 return collection.createIndex(indexSpec, options);
-            } else {
+            }
+            else {
                 return collection.createIndex(indexSpec);
             }
         });
@@ -246,13 +253,14 @@ export class MongoDatabase {
      *
      * @returns {Promise<DeleteResult>} The promise with the result.
      */
-    public deleteMany<T = Document>(collectionName: string, filter: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
+    public deleteMany<T extends Document = Document>(collectionName: string, filter: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
         return this.withClient((client, db) => {
             const collection = db.collection<T>(collectionName);
 
             if (options) {
                 return collection.deleteMany(filter, options);
-            } else {
+            }
+            else {
                 return collection.deleteMany(filter);
             }
         });
@@ -279,13 +287,14 @@ export class MongoDatabase {
      *
      * @returns {Promise<DeleteResult>} The promise with the result.
      */
-    public deleteOne<T = Document>(collectionName: string, filter: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
+    public deleteOne<T extends Document = Document>(collectionName: string, filter: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
         return this.withClient((client, db) => {
             const collection = db.collection<T>(collectionName);
 
             if (options) {
                 return collection.deleteOne(filter, options);
-            } else {
+            }
+            else {
                 return collection.deleteOne(filter);
             }
         });
@@ -330,24 +339,34 @@ export class MongoDatabase {
      * @returns {this} This instance.
      */
     public exitOnClose(exitCode = 2): this {
-        if (typeof exitCode !== 'number') {
-            throw new TypeError('exitCode must be of a number');
+        if (typeof exitCode !== "number") {
+            throw new TypeError("exitCode must be of a number");
         }
 
         const client = this.getClient();
 
         // close process, if connection to MongoDB
         // is terminated
-        client.once('close', () => process.exit());
+        client.once("close", () => {
+            return process.exit();
+        });
 
         // try to close connection, if process closes
-        process.once('exit', () => tryCloseClient(client));
-        process.once('SIGINT', () => tryCloseClient(client));
-        process.once('SIGUSR1', () => tryCloseClient(client));
-        process.once('SIGUSR2', () => tryCloseClient(client));
-        process.once('uncaughtException', (error) => {
+        process.once("exit", () => {
+            return tryCloseClient(client);
+        });
+        process.once("SIGINT", () => {
+            return tryCloseClient(client);
+        });
+        process.once("SIGUSR1", () => {
+            return tryCloseClient(client);
+        });
+        process.once("SIGUSR2", () => {
+            return tryCloseClient(client);
+        });
+        process.once("uncaughtException", (error) => {
             process.exitCode = exitCode;
-            console.error('[ERROR]', '@egomobile/mongo', error);
+            console.error("[ERROR]", "@egomobile/mongo", error);
 
             tryCloseClient(client);
         });
@@ -374,13 +393,13 @@ export class MongoDatabase {
      * @param {Filter<T>} filter The filter.
      * @param {FindOptions<T>} [options] Custom options.
      *
-     * @returns {Promise<T[]>} The promise with the result.
+     * @returns {Promise<WithId<T>[]>} The promise with the result.
      */
-    public find<T = IMongoSchema>(
+    public find<T extends Document = Document>(
         collectionName: string,
         filter: Filter<T>,
         options?: FindOptions<T>
-    ): Promise<T[]> {
+    ): Promise<WithId<T>[]> {
         return this.withClient((client, db) => {
             const collection = db.collection<T>(collectionName);
 
@@ -408,17 +427,17 @@ export class MongoDatabase {
      * @param {Filter<T>} filter The filter.
      * @param {FindOptions<T>} [options] Custom options.
      *
-     * @returns {Promise<T|null>} The promise with the result or (null) if not found.
+     * @returns {Promise<WithId<T>|null>} The promise with the result or (null) if not found.
      */
-    public findOne<T = IMongoSchema>(
+    public findOne<T extends Document = Document>(
         collectionName: string,
         filter: Filter<T>,
-        options?: FindOptions<T extends IMongoSchema ? IMongoSchema : T>
-    ): Promise<T | null> {
+        options?: FindOptions<T>
+    ): Promise<WithId<T> | null> {
         return this.withClient((client, db) => {
             const collection = db.collection<T>(collectionName);
 
-            return collection.findOne(filter as any, options as any) as any;
+            return collection.findOne(filter as any, options as any);
         });
     }
 
@@ -429,7 +448,7 @@ export class MongoDatabase {
      */
     public getClient(): MongoDBClient {
         if (!this._client) {
-            throw new Error('No connection to a Mongo DB opened');
+            throw new Error("No connection to a Mongo DB opened");
         }
 
         return this._client;
@@ -463,13 +482,14 @@ export class MongoDatabase {
      *
      * @returns {Promise<InsertManyResult<T>>} The promise with the result.
      */
-    public insertMany<T = IMongoSchema>(collectionName: string, docs: T[], options?: BulkWriteOptions): Promise<InsertManyResult<T>> {
+    public insertMany<T extends Document = Document>(collectionName: string, docs: T[], options?: BulkWriteOptions): Promise<InsertManyResult<T>> {
         return this.withClient((client, db) => {
             const collection = db.collection(collectionName);
 
             if (options) {
                 return collection.insertMany(docs, options);
-            } else {
+            }
+            else {
                 return collection.insertMany(docs);
             }
         });
@@ -496,13 +516,14 @@ export class MongoDatabase {
      *
      * @returns {Promise<InsertManyResult<T>>} The promise with the result.
      */
-    public insertOne<T = IMongoSchema>(collectionName: string, doc: T, options?: BulkWriteOptions): Promise<InsertOneResult<T>> {
+    public insertOne<T extends Document = Document>(collectionName: string, doc: T, options?: BulkWriteOptions): Promise<InsertOneResult<T>> {
         return this.withClient((client, db) => {
             const collection = db.collection(collectionName);
 
             if (options) {
                 return collection.insertOne(doc, options);
-            } else {
+            }
+            else {
                 return collection.insertOne(doc);
             }
         });
@@ -591,13 +612,14 @@ export class MongoDatabase {
      *
      * @returns {Promise<WriteOpResult>} The promise with the result.
      */
-    public updateMany<T = Document>(collectionName: string, filter: Filter<T>, update: UpdateFilter<T>, options?: UpdateOptions): Promise<Document | UpdateResult> {
+    public updateMany<T extends Document = Document>(collectionName: string, filter: Filter<T>, update: UpdateFilter<T>, options?: UpdateOptions): Promise<Document | UpdateResult> {
         return this.withClient((client, db) => {
             const collection = db.collection<T>(collectionName);
 
             if (options) {
                 return collection.updateMany(filter, update, options);
-            } else {
+            }
+            else {
                 return collection.updateMany(filter, update);
             }
         });
@@ -633,13 +655,14 @@ export class MongoDatabase {
      *
      * @returns {Promise<UpdateResult | Document>} The promise with the result.
      */
-    public updateOne<T = Document>(collectionName: string, filter: Filter<T>, update: UpdateFilter<T>, options?: UpdateOptions): Promise<UpdateResult | Document> {
+    public updateOne<T extends Document = Document>(collectionName: string, filter: Filter<T>, update: UpdateFilter<T>, options?: UpdateOptions): Promise<UpdateResult | Document> {
         return this.withClient((client, db) => {
             const collection = db.collection<T>(collectionName);
 
             if (options) {
                 return collection.updateOne(filter, update, options);
-            } else {
+            }
+            else {
                 return collection.updateOne(filter, update);
             }
         });
@@ -683,7 +706,8 @@ export class MongoDatabase {
 async function tryCloseClient(client: Nilable<MongoDBClient>) {
     try {
         client?.close();
-    } catch (error) {
-        console.warn('[WARN]', '@egomobile/mongo', error);
+    }
+    catch (error) {
+        console.warn("[WARN]", "@egomobile/mongo", error);
     }
 }

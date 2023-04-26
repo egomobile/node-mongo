@@ -13,30 +13,34 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { MongoDatabase } from '..';
+import { MongoDatabase } from "..";
 
-const collectionName = 'test';
+const collectionName = "test";
 
-describe('MongoDatabase.disconnect() method', () => {
-    it('should throw error if connection is closed', async () => {
+describe("MongoDatabase.disconnect() method", () => {
+    it("should throw error if connection is closed", async () => {
         const mongo: MongoDatabase = (global as any).mongo;
 
         // should be connected
-        expect(typeof mongo.isConnected).toBe('boolean');
+        expect(typeof mongo.isConnected).toBe("boolean");
         expect(mongo.isConnected).toBe(true);
 
         await expect((async () => {
-            await mongo.withClient(async (client, db) => db.collection(collectionName).countDocuments());
+            await mongo.withClient(async (client, db) => {
+                return db.collection(collectionName).countDocuments();
+            });
         })()).resolves.not.toThrowError();
 
         await mongo.disconnect();
 
         // should not be connected anymore
-        expect(typeof mongo.isConnected).toBe('boolean');
+        expect(typeof mongo.isConnected).toBe("boolean");
         expect(mongo.isConnected).toBe(false);
 
         await expect((async () => {
-            await mongo.withClient(async (client, db) => db.collection(collectionName).countDocuments());
+            await mongo.withClient(async (client, db) => {
+                return db.collection(collectionName).countDocuments();
+            });
         })()).rejects.toThrowError();
     });
 });
